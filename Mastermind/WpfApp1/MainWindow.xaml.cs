@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.Design.Serialization;
 using System.Drawing;
+using System.Reflection.Emit;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,29 +26,39 @@ namespace WpfApp1
             InitializeComponent();
         }
         private void InitializeGame(object?[] generatedCode)
-        {
-            // Beschikbare kleuren
-            string colors = { "rood", "geel", "oranje", "wit", "groen", "blauw" };
+        { }
+           
+        
+            private List<string> _availableColors = new List<string> { "Rood", "Geel", "Oranje", "Wit", "Groen", "Blauw" };
+            private List<string> _randomCode;
 
-            // Voeg kleuren toe aan elke ComboBox
-            comboBox1.Items.AddRange (colors);
-            comboBox2.Items.Add (colors);
-            comboBox3.Items.Add (colors);
-            comboBox4.Items.Add (colors);
+            public MainWindow()
+            {
+                InitializeComponent();
+                GenerateRandomCode();
+                FillComboBoxes();
+            }
 
-            // Genereer een willekeurige code en sla deze op
-            generatedCode = GenerateRandomCode(colors);
+            private void GenerateRandomCode()
+            {
+                Random rnd = new Random();
+                _randomCode = Enumerable.Range(0, 4)
+                    .Select(_ => _availableColors[rnd.Next(_availableColors.Count)])
+                    .ToList();
 
-            // Toon de geheime code in de titel 
-            this.AddText = $"Geheime Code: {string.Join(" ", generatedCode)}";
+                this.Title = $"Mastermind - Code: {string.Join(", ", _randomCode)}";
+            }
 
+            private void FillComboBoxes()
+            {
+                var comboBoxes = new[] { comboBox1, comboBox2, comboBox3, comboBox4 };
+                foreach (var comboBox in comboBoxes)
+                {
+                    comboBox.ItemsSource = _availableColors;
+                }
+            }
         }
-        private string[] GenerateRandomCode(string[] colors)
-        {
-            Random random = new Random();
-            return colors.OrderBy(x => random.Next()).Take(4).ToArray();
-        }
-
 
     }
-}
+
+
