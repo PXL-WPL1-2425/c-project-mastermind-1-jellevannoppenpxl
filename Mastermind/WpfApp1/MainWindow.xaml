@@ -1,52 +1,17 @@
-﻿<Window x:Class="WpfApp1.MainWindow"
+﻿<Window x:Class="Mastermind.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp1"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Mastermind" Height="552" Width="1195">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="160*"/>
-           
-        </Grid.ColumnDefinitions>
+        <ComboBox Name="firstComboBox" HorizontalAlignment="Left" Margin="0,11,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="ChoosingLabelColors"/>
+        <ComboBox Name="secondComboBox"  HorizontalAlignment="Left" Margin="200,11,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="ChoosingLabelColors"/>
+        <ComboBox Name="thirdComboBox"  HorizontalAlignment="Left" Margin="400,11,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="ChoosingLabelColors"/>
+        <ComboBox Name="fourthComboBox"  HorizontalAlignment="Left" Margin="600,11,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="ChoosingLabelColors"/>
+        <Button x:Name="controlButton" Content="check code" HorizontalAlignment="Left" Margin="350,265,0,0" VerticalAlignment="Top" Height="31" Width="149" Click="controlButton_Click"/>
 
-
-        <ComboBox Name="comboBox1" HorizontalAlignment="Left" Height="25" Margin="20,35,0,0" VerticalAlignment="Top" Width="169" >
-            <ComboBoxItem Content="Red" />
-            <ComboBoxItem Content="Orange"/>
-            <ComboBoxItem Content="Yellow"/>
-            <ComboBoxItem Content="Green"/>
-            <ComboBoxItem Content="Blue"/>
-            <ComboBoxItem Content="White"/>
-        </ComboBox>
-        <ComboBox Name="comboBox2" HorizontalAlignment="Left" Height="25" Margin="220,35,0,0" VerticalAlignment="Top" Width="169" >
-            <ComboBoxItem Content="Red"/>
-            <ComboBoxItem Content="Orange"/>
-            <ComboBoxItem Content="Yellow"/>
-            <ComboBoxItem Content="Green"/>
-            <ComboBoxItem Content="Blue"/>
-            <ComboBoxItem Content="White"/>
-        </ComboBox>
-        <ComboBox Name="comboBox3" HorizontalAlignment="Left" Height="25" Margin="412,35,0,0" VerticalAlignment="Top" Width="169" >
-            <ComboBoxItem Content="Red"/>
-            <ComboBoxItem Content="Orange"/>
-            <ComboBoxItem Content="Yellow"/>
-            <ComboBoxItem Content="Green"/>
-            <ComboBoxItem Content="Blue"/>
-            <ComboBoxItem Content="White"/>
-        </ComboBox>
-        <ComboBox Name="comboBox4" HorizontalAlignment="Left" Height="25" Margin="598,35,0,0" VerticalAlignment="Top" Width="169">
-            <ComboBoxItem Content="Red"/>
-            <ComboBoxItem Content="Orange"/>
-            <ComboBoxItem Content="Yellow"/>
-            <ComboBoxItem Content="Green"/>
-            <ComboBoxItem Content="Blue"/>
-            <ComboBoxItem Content="White"/>
-        </ComboBox>
-        <Button Content="check answers" HorizontalAlignment="Center" Height="28" VerticalAlignment="Center" Width="332" Click="ValidateAnswers_Click" Name="validateAnswersButton"/>
-
-
+        <Label Name="firstLabel" HorizontalAlignment="Left" Height="200" Width="201" Margin="0,33,0,0" VerticalAlignment="Top"/>
+        <Label Name="secondLabel" HorizontalAlignment="Left" Height="200" Width="200" Margin="200,33,0,0" VerticalAlignment="Top"/>
+        <Label Name="thirdLabel" HorizontalAlignment="Left" Height="200" Width="200" Margin="400,33,0,0" VerticalAlignment="Top"/>
+        <Label Name="fourthLabel" HorizontalAlignment="Left" Height="200" Width="200" Margin="600,33,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

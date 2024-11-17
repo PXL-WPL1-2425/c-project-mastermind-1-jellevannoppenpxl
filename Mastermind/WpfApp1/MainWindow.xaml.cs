@@ -1,44 +1,152 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
-namespace WpfApp1
+namespace Mastermind
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
-    {
-        // Define available colors and the randomly generated code
-        private readonly List<string> _availableColors = new List<string> { "Rood", "Geel", "Oranje", "Wit", "Groen", "Blauw" };
-        private List<string> _randomCode;
 
+    {string[] chosenColor = new string[4];
+        string[] allColors = { "white", "green", "blue", "red", "orange", "yellow" };
+        
         public MainWindow()
         {
             InitializeComponent();
-            GenerateRandomCode();
-            FillComboBoxes();
-        }
-
-        // Generates a random code of 4 colors
-        private void GenerateRandomCode()
-        {
             Random rnd = new Random();
-            _randomCode = Enumerable.Range(0, 4)
-                .Select(_ => _availableColors[rnd.Next(_availableColors.Count)])
-                .ToList();
+            
 
-            // Display the generated code in the title (for debugging purposes)
-            this.Title = $"Mastermind - Code: {string.Join(", ", _randomCode)}";
+
+            for (int i = 0; i < 4; i++)
+            {
+                int color = rnd.Next(allColors.Length);
+                chosenColor[i] = allColors[color];
+
+
+
+            }
+              MainWindow.Title = "MasterMind (" + string.Join(",", chosenColor) + ")";
+  
+
+
+            FillComboBoxes(ref allColors);
+        }
+        private void ChoosingLabelColors(object sender, RoutedEventArgs e)
+        {
+
+
+            ComboBox comboBox = (ComboBox)sender;
+            if (comboBox.SelectedItem != null)
+            {
+                string selectedColor = comboBox.SelectedItem.ToString();
+
+                SolidColorBrush colorBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(selectedColor));
+                switch (comboBox.Name)
+                {
+                    case "firstComboBox":
+                        firstLabel.Background = colorBrush;
+                                              
+                        break;
+                    case "secondComboBox":
+                        secondLabel.Background = colorBrush;
+                      
+                        break;
+                    case "thirdComboBox":
+                        thirdLabel.Background = colorBrush;
+                       
+                        break;
+                    case "fourthComboBox":
+                        fourthLabel.Background = colorBrush;
+                        
+                        break;
+                }
+            }
+        }
+        private void FillComboBoxes(ref string[] items)
+        {
+            fourthComboBox.Items.Add(items);
+
+            foreach (var item in items)
+            {
+                firstComboBox.Items.Add(item);
+                secondComboBox.Items.Add(item);
+                thirdComboBox.Items.Add(item);
+                fourthComboBox.Items.Add(item);
+            }
         }
 
-        // Fills ComboBoxes with the available colors
-        private void FillComboBoxes()
+        private void SetBorderColor(int index, Color color)
         {
-            // Ensure comboBox1, comboBox2, etc., are defined in XAML
-            var comboBoxes = new[] { comboBox1, comboBox2, comboBox3, comboBox4 };
-            foreach (var comboBox in comboBoxes)
+            SolidColorBrush borderBrush = new SolidColorBrush(color);
+            switch (index)
             {
-                comboBox.ItemsSource = _availableColors;
+                case 0:
+                    firstLabel.BorderBrush = borderBrush;
+                    firstLabel.BorderThickness = new Thickness(2);
+                    break;
+                case 1:
+                    secondLabel.BorderBrush = borderBrush;
+                    secondLabel.BorderThickness = new Thickness(2);
+                    break;
+                case 2:
+                    thirdLabel.BorderBrush = borderBrush;
+                    thirdLabel.BorderThickness = new Thickness(2);
+                    break;
+                case 3:
+                    fourthLabel.BorderBrush = borderBrush;
+                    fourthLabel.BorderThickness = new Thickness(2);
+                    break;
+            }
+        }
+
+
+        private void controlButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+            string[] userPickedColors =  {
+                                 firstComboBox.SelectedItem.ToString(),
+                                 secondComboBox.SelectedItem.ToString(),
+                                 thirdComboBox.SelectedItem.ToString(),
+                                 fourthComboBox.SelectedItem.ToString()
+
+            };
+            for (int i = 0; i < userPickedColors.Length; i++)
+            {
+                if (userPickedColors[i] == chosenColor[i])
+                {
+                    SetBorderColor(i, Colors.DarkRed);
+                }
+                else if (chosenColor.Contains(userPickedColors[i]))
+                {
+
+                    SetBorderColor(i, Colors.Wheat);
+                }
+                else
+                {
+                    SetBorderColor(i, Colors.Transparent);
+                }
             }
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
