@@ -106,6 +106,7 @@ namespace Mastermind
         {
             Dispatcher timer;
             timer.Start();
+            timer.Stop(10 sec);
             string[] userPickedColors =  {
                                  firstComboBox.SelectedItem.ToString(),
                                  secondComboBox.SelectedItem.ToString(),
