@@ -8,10 +8,11 @@
         <ComboBox Name="thirdComboBox"  HorizontalAlignment="Left" Margin="400,11,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="ChoosingLabelColors"/>
         <ComboBox Name="fourthComboBox"  HorizontalAlignment="Left" Margin="600,11,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="ChoosingLabelColors"/>
         <Button x:Name="controlButton" Content="check code" HorizontalAlignment="Left" Margin="350,265,0,0" VerticalAlignment="Top" Height="31" Width="149" Click="controlButton_Click"/>
-
+       
         <Label Name="firstLabel" HorizontalAlignment="Left" Height="200" Width="201" Margin="0,33,0,0" VerticalAlignment="Top"/>
         <Label Name="secondLabel" HorizontalAlignment="Left" Height="200" Width="200" Margin="200,33,0,0" VerticalAlignment="Top"/>
         <Label Name="thirdLabel" HorizontalAlignment="Left" Height="200" Width="200" Margin="400,33,0,0" VerticalAlignment="Top"/>
         <Label Name="fourthLabel" HorizontalAlignment="Left" Height="200" Width="200" Margin="600,33,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
+//toggledebug, startcountdown en stopcountdown.//
