@@ -63,7 +63,7 @@ namespace Mastermind
                 }
             }
         }
-        private void FillComboBoxes(ref string[] items)
+        private void FillComboBoxes(ref string[] items) 
         {
             fourthComboBox.Items.Add(items);
 
