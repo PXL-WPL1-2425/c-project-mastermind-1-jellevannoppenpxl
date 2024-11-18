@@ -104,7 +104,8 @@ namespace Mastermind
 
         private void controlButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            Dispatcher timer;
+            timer.Start();
             string[] userPickedColors =  {
                                  firstComboBox.SelectedItem.ToString(),
                                  secondComboBox.SelectedItem.ToString(),
