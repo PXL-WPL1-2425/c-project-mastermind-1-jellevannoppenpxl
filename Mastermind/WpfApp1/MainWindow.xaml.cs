@@ -86,21 +86,39 @@ namespace MasterMind
                 int correctPosition = 0;
                 int correctColor = 0;
 
+                // Controleer de gok
                 for (int i = 0; i < 4; i++)
                 {
-                    if (currentGuess[i].Tag?.ToString() == secretKey[i])
+                    if (currentGuess[i].Tag.ToString() == secretKey[i])
                     {
                         correctPosition++;
                     }
-                    else if (secretKey.Contains(currentGuess[i].Tag?.ToString() ?? ""))
+                    else if (secretKey.Contains(currentGuess[i].Tag.ToString()))
                     {
                         correctColor++;
                     }
                 }
 
+                // Genereer feedback
+                List<Brush> feedback = new List<Brush>();
+                for (int i = 0; i < correctPosition; i++)
+                    feedback.Add(Brushes.Red); // Correcte positie
 
-                MessageBox.Show($"Correct Position: {correctPosition}, Correct Color: {correctColor}");
+                for (int i = 0; i < correctColor; i++)
+                    feedback.Add(Brushes.White); // Correcte kleur
 
+                // Voeg poging en feedback toe aan de lijst
+                attempts.Add(new Attempt
+                {
+                    Guess = currentGuess.ConvertAll(b => b.Background),
+                    Feedback = feedback
+                });
+
+                // Update de lijstweergave
+                AttemptsList.ItemsSource = null;
+                AttemptsList.ItemsSource = attempts;
+
+                // Reset de gok voor de volgende poging
                 currentGuess.Clear();
                 currentRow++;
             }
@@ -109,6 +127,7 @@ namespace MasterMind
                 MessageBox.Show("Please select 4 colors before checking!");
             }
         }
+
 
         private void NewKey_Click(object sender, RoutedEventArgs e)
         {
