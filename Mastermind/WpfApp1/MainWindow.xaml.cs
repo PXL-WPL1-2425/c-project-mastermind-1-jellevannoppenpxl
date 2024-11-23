@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,11 +13,15 @@ namespace MasterMind
         private List<Button> currentGuess = new List<Button>();
         private int currentRow = 0;
 
+        private ObservableCollection<Attempt> attempts = new ObservableCollection<Attempt>();
+
         public MainWindow()
         {
             InitializeComponent();
+            AttemptsList.ItemsSource = attempts; // Verbind direct aan ObservableCollection.
             GenerateNewKey();
         }
+
 
         private void GenerateNewKey()
         {
@@ -52,6 +57,7 @@ namespace MasterMind
                 cell.Click += BoardCell_Click;
                 GameBoard.Children.Add(cell);
             }
+
         }
 
         private void BoardCell_Click(object sender, RoutedEventArgs e)
@@ -84,66 +90,69 @@ namespace MasterMind
             if (currentGuess.Count == 4)
             {
                 int totalPenalty = 0; // Totaal aantal strafpunten
-                List<int> penalizedPositions = new List<int>(); // Voor dubbele strafpunten
+                List<int> penalizedPositions = new List<int>(); // Lijst voor het bijhouden van de strafpuntenposities
 
+                // Loop over alle kleuren in de gok
                 for (int i = 0; i < 4; i++)
                 {
-                    string guessedColor = currentGuess[i].Tag?.ToString();
+                    string guessedColor = currentGuess[i].Tag?.ToString() ?? string.Empty;
+
 
                     if (guessedColor == null)
-                        continue;
+                        continue; // Als de kleur null is, ga door naar de volgende iteratie
 
+                    // Als de kleur overeenkomt met de geheime code op de zelfde positie
                     if (guessedColor == secretKey[i])
                     {
-                        // 0 strafpunten: correcte kleur en positie
-                        totalPenalty += 0;
+                        totalPenalty += 0; // Correcte kleur en positie
                     }
                     else if (secretKey.Contains(guessedColor) && !penalizedPositions.Contains(secretKey.IndexOf(guessedColor)))
                     {
-                        // 1 strafpunt: kleur komt voor maar staat op de verkeerde plaats
-                        totalPenalty += 1;
-                        penalizedPositions.Add(secretKey.IndexOf(guessedColor)); // Vermijd dubbele punten
+                        totalPenalty += 1; // Kleur komt voor, maar op een andere positie
+                        penalizedPositions.Add(secretKey.IndexOf(guessedColor)); // Zorg ervoor dat dezelfde kleur niet meerdere keren bestraft wordt
                     }
                     else
                     {
-                        // 2 strafpunten: kleur komt niet voor in de code
-                        totalPenalty += 2;
+                        totalPenalty += 2; // Kleur komt niet voor in de geheime code
                     }
                 }
 
-                // Update de score in het Label
+                // Update de score in het label (je moet een `ScoreLabel` in de XAML hebben)
                 ScoreLabel.Content = $"Score: {totalPenalty} Strafpunten";
 
-                // Genereer feedback (zoals eerder)
+                // Genereer feedback (bijvoorbeeld witte of rode stippen)
                 List<Brush> feedback = new List<Brush>();
                 for (int i = 0; i < totalPenalty; i++)
                 {
-                    feedback.Add(Brushes.Red); // Correct aantal 1x helperlogicpunited score caluclaly injc punt.
-
-                    for (int i = 0; i < correctColor; i++)
-                        feedback.Add(Brushes.White); // Correcte kleur
-
-                    // Voeg poging en feedback toe aan de lijst
-                    attempts.Add(new Attempt
-                    {
-                        Guess = currentGuess.ConvertAll(b => b.Background),
-                        Feedback = feedback
-                    });
-
-                    // Update de lijstweergave
-                    AttemptsList.ItemsSource = null;
-                    AttemptsList.ItemsSource = attempts;
-
-                    // Reset de gok voor de volgende poging
-                    currentGuess.Clear();
-                    currentRow++;
+                    feedback.Add(Brushes.Red); // Voeg een rode stip toe voor een fout geraden kleur
                 }
+
+                // Voeg de poging en de feedback toe aan de lijst van pogingen
+                attempts.Add(new Attempt
+                {
+                    Guess = currentGuess.ConvertAll(b => b.Background), // Haal de achtergrondkleur van elke knop in de poging
+                    Feedback = feedback // Voeg de feedback toe
+                });
+
+                // Update de weergave van de pogingen in de ListBox
+                AttemptsList.ItemsSource = null;
+                AttemptsList.ItemsSource = attempts;
+
+                // Reset de huidige gok voor de volgende poging
+                currentGuess.Clear();
+                currentRow++;
+
+                // Controleer of het spel afgelopen is (bijvoorbeeld, als de penalty 0 is, betekent dat de code is gekraakt)
+                CheckGameOver(totalPenalty == 0); // Het spel eindigt als er geen strafpunten zijn (code gekraakt)
             }
             else
             {
                 MessageBox.Show("Please select 4 colors before checking!");
             }
         }
+
+
+
 
 
         private void NewKey_Click(object sender, RoutedEventArgs e)
@@ -224,9 +233,34 @@ namespace MasterMind
             }
         }
 
+        private void ResetGame()
+        {
+            GenerateNewKey();
+            attempts.Clear();
+            currentRow = 0;
+            ScoreLabel.Content = "Score: 0 Strafpunten"; // Score resetten.
+           
+        }
 
     }
 }
+public class Attempt
+{
+    public List<Brush> Guess { get; set; }
+    public List<Brush> Feedback { get; set; }
+
+    public Attempt()
+    {
+        // Initialiseer Guess en Feedback met lege lijsten
+        Guess = new List<Brush>();
+        Feedback = new List<Brush>();
+    }
+}
+
+
+
+
+
 
 
 
