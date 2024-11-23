@@ -83,44 +83,61 @@ namespace MasterMind
         {
             if (currentGuess.Count == 4)
             {
-                int correctPosition = 0;
-                int correctColor = 0;
+                int totalPenalty = 0; // Totaal aantal strafpunten
+                List<int> penalizedPositions = new List<int>(); // Voor dubbele strafpunten
 
-                // Controleer de gok
                 for (int i = 0; i < 4; i++)
                 {
-                    if (currentGuess[i].Tag.ToString() == secretKey[i])
+                    string guessedColor = currentGuess[i].Tag?.ToString();
+
+                    if (guessedColor == null)
+                        continue;
+
+                    if (guessedColor == secretKey[i])
                     {
-                        correctPosition++;
+                        // 0 strafpunten: correcte kleur en positie
+                        totalPenalty += 0;
                     }
-                    else if (secretKey.Contains(currentGuess[i].Tag.ToString()))
+                    else if (secretKey.Contains(guessedColor) && !penalizedPositions.Contains(secretKey.IndexOf(guessedColor)))
                     {
-                        correctColor++;
+                        // 1 strafpunt: kleur komt voor maar staat op de verkeerde plaats
+                        totalPenalty += 1;
+                        penalizedPositions.Add(secretKey.IndexOf(guessedColor)); // Vermijd dubbele punten
+                    }
+                    else
+                    {
+                        // 2 strafpunten: kleur komt niet voor in de code
+                        totalPenalty += 2;
                     }
                 }
 
-                // Genereer feedback
+                // Update de score in het Label
+                ScoreLabel.Content = $"Score: {totalPenalty} Strafpunten";
+
+                // Genereer feedback (zoals eerder)
                 List<Brush> feedback = new List<Brush>();
-                for (int i = 0; i < correctPosition; i++)
-                    feedback.Add(Brushes.Red); // Correcte positie
-
-                for (int i = 0; i < correctColor; i++)
-                    feedback.Add(Brushes.White); // Correcte kleur
-
-                // Voeg poging en feedback toe aan de lijst
-                attempts.Add(new Attempt
+                for (int i = 0; i < totalPenalty; i++)
                 {
-                    Guess = currentGuess.ConvertAll(b => b.Background),
-                    Feedback = feedback
-                });
+                    feedback.Add(Brushes.Red); // Correct aantal 1x helperlogicpunited score caluclaly injc punt.
 
-                // Update de lijstweergave
-                AttemptsList.ItemsSource = null;
-                AttemptsList.ItemsSource = attempts;
+                    for (int i = 0; i < correctColor; i++)
+                        feedback.Add(Brushes.White); // Correcte kleur
 
-                // Reset de gok voor de volgende poging
-                currentGuess.Clear();
-                currentRow++;
+                    // Voeg poging en feedback toe aan de lijst
+                    attempts.Add(new Attempt
+                    {
+                        Guess = currentGuess.ConvertAll(b => b.Background),
+                        Feedback = feedback
+                    });
+
+                    // Update de lijstweergave
+                    AttemptsList.ItemsSource = null;
+                    AttemptsList.ItemsSource = attempts;
+
+                    // Reset de gok voor de volgende poging
+                    currentGuess.Clear();
+                    currentRow++;
+                }
             }
             else
             {
