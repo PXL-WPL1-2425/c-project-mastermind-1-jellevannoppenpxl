@@ -1,18 +1,34 @@
-﻿<Window x:Class="Mastermind.MainWindow"
+﻿<Window x:Class="MasterMind.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Mastermind" Height="552" Width="1195">
-    <Grid>
-        <ComboBox Name="firstComboBox" HorizontalAlignment="Left" Margin="0,11,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="ChoosingLabelColors"/>
-        <ComboBox Name="secondComboBox"  HorizontalAlignment="Left" Margin="200,11,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="ChoosingLabelColors"/>
-        <ComboBox Name="thirdComboBox"  HorizontalAlignment="Left" Margin="400,11,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="ChoosingLabelColors"/>
-        <ComboBox Name="fourthComboBox"  HorizontalAlignment="Left" Margin="600,11,0,0" VerticalAlignment="Top" Width="200" SelectionChanged="ChoosingLabelColors"/>
-        <Button x:Name="controlButton" Content="check code" HorizontalAlignment="Left" Margin="350,265,0,0" VerticalAlignment="Top" Height="31" Width="149" Click="controlButton_Click"/>
-       
-        <Label Name="firstLabel" HorizontalAlignment="Left" Height="200" Width="201" Margin="0,33,0,0" VerticalAlignment="Top"/>
-        <Label Name="secondLabel" HorizontalAlignment="Left" Height="200" Width="200" Margin="200,33,0,0" VerticalAlignment="Top"/>
-        <Label Name="thirdLabel" HorizontalAlignment="Left" Height="200" Width="200" Margin="400,33,0,0" VerticalAlignment="Top"/>
-        <Label Name="fourthLabel" HorizontalAlignment="Left" Height="200" Width="200" Margin="600,33,0,0" VerticalAlignment="Top"/>
+        Title="MasterMind" Height="600" Width="400" Background="#F0F0F0">
+    <Grid Margin="10">
+        <!-- Titel -->
+        <TextBlock Text="MasterMind " FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" />
+
+        <!-- Labels en knoppen -->
+        <StackPanel Orientation="Vertical" Margin="0,50,0,0">
+
+            <!-- Bord -->
+            <UniformGrid Rows="10" Columns="4" VerticalAlignment="Top" Margin="0,20,0,0" Name="GameBoard">
+                <!-- Hier komen dynamisch de rijen -->
+            </UniformGrid>
+
+            <!-- Kleurknoppen -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20">
+                <Button Background="White" Width="40" Height="40" Click="ColorButton_Click" Tag="white" />
+                <Button Background="Red" Width="40" Height="40" Click="ColorButton_Click" Tag="Red" />
+                <Button Background="Green" Width="40" Height="40" Click="ColorButton_Click" Tag="Green" />
+                <Button Background="Blue" Width="40" Height="40" Click="ColorButton_Click" Tag="Blue" />
+                <Button Background="Yellow" Width="40" Height="40" Click="ColorButton_Click" Tag="Yellow" />
+                <Button Background="Orange" Width="40" Height="40" Click="ColorButton_Click" Tag="Orange" />
+            </StackPanel>
+
+            <!-- Actieknoppen -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10">
+                <Button Content="New Key" Width="80" Click="NewKey_Click" />
+                <Button Content="Check" Width="80" Margin="10,0" Click="CheckGuess_Click" />
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>
-//toggledebug, startcountdown en stopcountdown.//

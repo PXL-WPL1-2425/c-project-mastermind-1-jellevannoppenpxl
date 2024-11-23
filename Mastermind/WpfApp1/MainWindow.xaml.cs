@@ -1,138 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Mastermind
+namespace MasterMind
 {
     public partial class MainWindow : Window
+    {
+        private List<string> secretKey = new List<string>();
+        private List<Button> currentGuess = new List<Button>();
+        private int currentRow = 0;
 
-    {string[] chosenColor = new string[4];
-        string[] allColors = { "white", "green", "blue", "red", "orange", "yellow" };
-        
         public MainWindow()
         {
             InitializeComponent();
-            Random rnd = new Random();
-            
+            GenerateNewKey();
+        }
 
+        private void GenerateNewKey()
+        {
+            secretKey.Clear();
+            Random random = new Random();
+            string[] colors = { "rood", "geel", "oranje", "wit", "groen", "blauw" };
 
             for (int i = 0; i < 4; i++)
             {
-                int color = rnd.Next(allColors.Length);
-                chosenColor[i] = allColors[color];
-
-
-
+                secretKey.Add(colors[random.Next(colors.Length)]);
             }
-              MainWindow.Title = "MasterMind (" + string.Join(",", chosenColor) + ")";
-  
 
-
-            FillComboBoxes(ref allColors);
+            MessageBox.Show("A new key has been generated!");
+            ResetBoard();
         }
-        private void ChoosingLabelColors(object sender, RoutedEventArgs e)
+
+        private void ResetBoard()
         {
+            GameBoard.Children.Clear();
+            currentGuess.Clear();
+            currentRow = 0;
 
-
-            ComboBox comboBox = (ComboBox)sender;
-            if (comboBox.SelectedItem != null)
+            for (int i = 0; i < 40; i++)
             {
-                string selectedColor = comboBox.SelectedItem.ToString();
-
-                SolidColorBrush colorBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(selectedColor));
-                switch (comboBox.Name)
+                Button cell = new Button
                 {
-                    case "firstComboBox":
-                        firstLabel.Background = colorBrush;
-                                              
-                        break;
-                    case "secondComboBox":
-                        secondLabel.Background = colorBrush;
-                      
-                        break;
-                    case "thirdComboBox":
-                        thirdLabel.Background = colorBrush;
-                       
-                        break;
-                    case "fourthComboBox":
-                        fourthLabel.Background = colorBrush;
-                        
-                        break;
-                }
-            }
-        }
-        private void FillComboBoxes(ref string[] items) 
-        {
-            fourthComboBox.Items.Add(items);
-
-            foreach (var item in items)
-            {
-                firstComboBox.Items.Add(item);
-                secondComboBox.Items.Add(item);
-                thirdComboBox.Items.Add(item);
-                fourthComboBox.Items.Add(item);
+                    Background = Brushes.Gray,
+                    Width = 40,
+                    Height = 40,
+                    Margin = new Thickness(5),
+                    Tag = ""
+                };
+                cell.Click += BoardCell_Click;
+                GameBoard.Children.Add(cell);
             }
         }
 
-        private void SetBorderColor(int index, Color color)
+        private void BoardCell_Click(object sender, RoutedEventArgs e)
         {
-            SolidColorBrush borderBrush = new SolidColorBrush(color);
-            switch (index)
+            if (currentGuess.Count < 4 && sender is Button button)
             {
-                case 0:
-                    firstLabel.BorderBrush = borderBrush;
-                    firstLabel.BorderThickness = new Thickness(2);
-                    break;
-                case 1:
-                    secondLabel.BorderBrush = borderBrush;
-                    secondLabel.BorderThickness = new Thickness(2);
-                    break;
-                case 2:
-                    thirdLabel.BorderBrush = borderBrush;
-                    thirdLabel.BorderThickness = new Thickness(2);
-                    break;
-                case 3:
-                    fourthLabel.BorderBrush = borderBrush;
-                    fourthLabel.BorderThickness = new Thickness(2);
-                    break;
+                int buttonIndex = GameBoard.Children.IndexOf(button);
+                int rowIndex = buttonIndex / 4;
+
+                if (rowIndex == currentRow && !currentGuess.Contains(button))
+                {
+                    currentGuess.Add(button);
+                    button.Background = Brushes.LightGray; // Placeholderkleur
+                }
             }
         }
 
-
-        private void controlButton_Click(object sender, RoutedEventArgs e)
+        private void ColorButton_Click(object sender, RoutedEventArgs e)
         {
-            Dispatcher timer;
-            timer.Start();
-            timer.Stop(10 sec);
-            string[] userPickedColors =  {
-                                 firstComboBox.SelectedItem.ToString(),
-                                 secondComboBox.SelectedItem.ToString(),
-                                 thirdComboBox.SelectedItem.ToString(),
-                                 fourthComboBox.SelectedItem.ToString()
-
-            };
-            for (int i = 0; i < userPickedColors.Length; i++)
+            if (currentGuess.Count > 0 && sender is Button colorButton)
             {
-                if (userPickedColors[i] == chosenColor[i])
-                {
-                    SetBorderColor(i, Colors.DarkRed);
-                }
-                else if (chosenColor.Contains(userPickedColors[i]))
-                {
-
-                    SetBorderColor(i, Colors.Wheat);
-                }
-                else
-                {
-                    SetBorderColor(i, Colors.Transparent);
-                }
+                Button lastButton = currentGuess[currentGuess.Count - 1];
+                lastButton.Background = colorButton.Background;
+                lastButton.Tag = colorButton.Tag;
             }
+        }
+
+        private void CheckGuess_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentGuess.Count == 4)
+            {
+                int correctPosition = 0;
+                int correctColor = 0;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    if (currentGuess[i].Tag?.ToString() == secretKey[i])
+                    {
+                        correctPosition++;
+                    }
+                    else if (secretKey.Contains(currentGuess[i].Tag?.ToString() ?? ""))
+                    {
+                        correctColor++;
+                    }
+                }
+
+
+                MessageBox.Show($"Correct Position: {correctPosition}, Correct Color: {correctColor}");
+
+                currentGuess.Clear();
+                currentRow++;
+            }
+            else
+            {
+                MessageBox.Show("Please select 4 colors before checking!");
+            }
+        }
+
+        private void NewKey_Click(object sender, RoutedEventArgs e)
+        {
+            GenerateNewKey();
         }
     }
-}Debug mode 
+}
 
 
 
