@@ -150,6 +150,59 @@ namespace MasterMind
         {
             GenerateNewKey();
         }
+        private void StopGame_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(
+                $"Poging {currentRow + 1}/10\n\nWilt u het spel vroegtijdig beëindigen?",
+                "Spel Beëindigen",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
+            }
+        }
+        private void CheckGameOver(bool codeCracked)
+        {
+            if (codeCracked)
+            {
+                MessageBoxResult result = MessageBox.Show(
+                    $"Code is gekraakt in {currentRow + 1} pogingen. Wil je nog eens?",
+                    "WINNER",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Information);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    ResetGame();
+                }
+                else
+                {
+                    Application.Current.Shutdown();
+                }
+            }
+            else if (currentRow >= 10)
+            {
+                string code = string.Join(", ", secretKey);
+                MessageBoxResult result = MessageBox.Show(
+                    $"Je hebt gefaald! De correcte code was: {code}. Nog eens proberen?",
+                    "FAILED",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    ResetGame();
+                }
+                else
+                {
+                    Application.Current.Shutdown();
+                }
+            }
+        }
+
+
     }
 }
 
