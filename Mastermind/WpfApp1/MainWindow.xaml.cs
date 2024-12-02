@@ -29,7 +29,7 @@ namespace MasterMind
             Random random = new Random();
             string[] colors = { "rood", "geel", "oranje", "wit", "groen", "blauw" };
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < colors.Length; i++)
             {
                 secretKey.Add(colors[random.Next(colors.Length)]);
             }
@@ -37,13 +37,15 @@ namespace MasterMind
             MessageBox.Show("A new key has been generated!");
             ResetBoard();
         }
-
+        string Highscores = new; 
+        
         private void ResetBoard()
         {
+            MessageBox.Show("u score is ");
             GameBoard.Children.Clear();
             currentGuess.Clear();
             currentRow = 0;
-
+            
             for (int i = 0; i < 40; i++)
             {
                 Button cell = new Button
