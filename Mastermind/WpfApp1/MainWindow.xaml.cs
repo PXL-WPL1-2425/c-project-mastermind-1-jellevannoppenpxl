@@ -33,11 +33,11 @@ namespace MasterMind
             {
                 secretKey.Add(colors[random.Next(colors.Length)]);
             }
-
-            MessageBox.Show("A new key has been generated!");
+            
+            
             ResetBoard();
         }
-        string Highscores = new; 
+        string Highscores = new;
         
         private void ResetBoard()
         {
@@ -159,6 +159,7 @@ namespace MasterMind
 
         private void NewKey_Click(object sender, RoutedEventArgs e)
         {
+            MessageBox.Show("geeg jou naam in  [ ]");
             GenerateNewKey();
         }
         private void StopGame_Click(object sender, RoutedEventArgs e)
