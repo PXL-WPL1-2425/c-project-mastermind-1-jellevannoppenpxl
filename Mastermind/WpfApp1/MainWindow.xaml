@@ -68,11 +68,5 @@
         </StackPanel>
 
     </Grid>
-    <ComboBox>
-        <ComboBoxItem Content =" score "
-
-
-
-
-    </ComboBox>
+    
 </Window>

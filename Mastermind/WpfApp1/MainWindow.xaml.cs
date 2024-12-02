@@ -9,13 +9,26 @@ namespace MasterMind
 {
     public partial class MainWindow : Window
     {
-        private List<string> secretKey = new List<string>();
-        private List<Button> currentGuess = new List<Button>();
+        private static readonly List<string> value = [];
+        private List<string> secretKey = value;
+
+        public MainWindow(List<string> secretKey)
+        {
+            this.secretKey = secretKey;
+        }
+
+        private static readonly List<Button> value1 = []; 
+        private List<Button> currentGuess = value1;
+
+        public MainWindow(List<Button> currentGuess)
+        {
+            this.currentGuess = currentGuess;
+        }
+
         private int currentRow = 0;
 
-        private ObservableCollection<Attempt> attempts = new ObservableCollection<Attempt>();
-
-        public MainWindow()
+        private ObservableCollection<Attempt> attempts = [];
+         public MainWindow()
         {
             InitializeComponent();
             AttemptsList.ItemsSource = attempts; // Verbind direct aan ObservableCollection.
@@ -27,7 +40,7 @@ namespace MasterMind
         {
             secretKey.Clear();
             Random random = new Random();
-            string[] colors = { "rood", "geel", "oranje", "wit", "groen", "blauw" };
+            string[] colors = ["rood", "geel", "oranje", "wit", "groen", "blauw"];
 
             for (int i = 0; i < colors.Length; i++)
             {
@@ -37,7 +50,6 @@ namespace MasterMind
             
             ResetBoard();
         }
-        string Highscores = new;
         
         private void ResetBoard()
         {
@@ -81,7 +93,7 @@ namespace MasterMind
         {
             if (currentGuess.Count > 0 && sender is Button colorButton)
             {
-                Button lastButton = currentGuess[currentGuess.Count - 1];
+                Button lastButton = currentGuess[^1];
                 lastButton.Background = colorButton.Background;
                 lastButton.Tag = colorButton.Tag;
             }
@@ -92,7 +104,7 @@ namespace MasterMind
             if (currentGuess.Count == 4)
             {
                 int totalPenalty = 0; // Totaal aantal strafpunten
-                List<int> penalizedPositions = new List<int>(); // Lijst voor het bijhouden van de strafpuntenposities
+                List<int> penalizedPositions = []; // Lijst voor het bijhouden van de strafpuntenposities
 
                 // Loop over alle kleuren in de gok
                 for (int i = 0; i < 4; i++)
@@ -115,7 +127,7 @@ namespace MasterMind
                     }
                     else
                     {
-                        totalPenalty += 2; // Kleur komt niet voor in de geheime code
+                        totalPenalty += 1; // Kleur komt niet voor in de geheime code
                     }
                 }
 
@@ -123,7 +135,7 @@ namespace MasterMind
                 ScoreLabel.Content = $"Score: {totalPenalty} Strafpunten";
 
                 // Genereer feedback (bijvoorbeeld witte of rode stippen)
-                List<Brush> feedback = new List<Brush>();
+                List<Brush> feedback = [];
                 for (int i = 0; i < totalPenalty; i++)
                 {
                     feedback.Add(Brushes.Red); // Voeg een rode stip toe voor een fout geraden kleur
@@ -227,16 +239,13 @@ namespace MasterMind
 
     }
 }
-public class Attempt
+public record Attempt(List<Brush> Guess, List<Brush> Feedback)
 {
-    public List<Brush> Guess { get; set; }
-    public List<Brush> Feedback { get; set; }
-
-    public Attempt()
+    public Attempt() : this([], [])
     {
         // Initialiseer Guess en Feedback met lege lijsten
-        Guess = new List<Brush>();
-        Feedback = new List<Brush>();
+
+
     }
 }
 

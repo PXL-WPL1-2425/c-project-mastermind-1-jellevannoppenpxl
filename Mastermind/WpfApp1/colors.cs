@@ -1,6 +1,6 @@
 ﻿namespace WpfApp1
 {
-    internal class colors
+    internal class masterMind
     {
     }
 }
