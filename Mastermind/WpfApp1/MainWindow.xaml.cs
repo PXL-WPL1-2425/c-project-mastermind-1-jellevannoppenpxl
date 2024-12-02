@@ -231,7 +231,7 @@ namespace MasterMind
         private void ResetGame()
         {
             GenerateNewKey();
-            attempts.Clear();
+            attempts.Clear(); 
             currentRow = 0;
             ScoreLabel.Content = "Score: 0 Strafpunten"; // Score resetten.
            
