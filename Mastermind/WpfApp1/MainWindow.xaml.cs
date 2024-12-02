@@ -159,7 +159,7 @@ namespace MasterMind
 
         private void NewKey_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("geeg jou naam in  [ ]");
+            MessageBox.Show("geef jou naam in  [ ]");
             GenerateNewKey();
         }
         private void StopGame_Click(object sender, RoutedEventArgs e)
@@ -213,29 +213,9 @@ namespace MasterMind
                 }
             }
         }
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            // Voorkomt het standaard afsluiten van de applicatie
-            e.Cancel = true;
+       
 
-            // Vraag de gebruiker of hij/zij echt wil afsluiten
-            MessageBoxResult result = MessageBox.Show(
-                "Weet je zeker dat je het spel wilt beëindigen?",
-                "Bevestig Afsluiten",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                // Sluit de applicatie als de gebruiker dit bevestigt
-                Application.Current.Shutdown();
-            }
-            else
-            {
-                // Doe niets, het spel gaat verder
-            }
-        }
-
+           
         private void ResetGame()
         {
             GenerateNewKey();
