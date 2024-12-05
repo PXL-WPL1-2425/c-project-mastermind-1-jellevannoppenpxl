@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -9,55 +10,44 @@ namespace MasterMind
 {
     public partial class MainWindow : Window
     {
-        private static readonly List<string> value = [];
-        private List<string> secretKey = value;
-
-        public MainWindow(List<string> secretKey)
-        {
-            this.secretKey = secretKey;
-        }
-
-        private static readonly List<Button> value1 = []; 
-        private List<Button> currentGuess = value1;
-
-        public MainWindow(List<Button> currentGuess)
-        {
-            this.currentGuess = currentGuess;
-        }
-
+        private List<string> secretKey = new();
+        private List<Button> currentGuess = new();
         private int currentRow = 0;
+        private ObservableCollection<Attempt> attempts = new();
+        private List<string> playerNames = new(); // Lijst om spelersnamen op te slaan
 
-        private ObservableCollection<Attempt> attempts = [];
-         public MainWindow()
+        public MainWindow()
         {
             InitializeComponent();
-            AttemptsList.ItemsSource = attempts; // Verbind direct aan ObservableCollection.
+            AttemptsList.ItemsSource = attempts; // Verbind de lijst aan de UI.
             GenerateNewKey();
+            StartGame();
         }
-
 
         private void GenerateNewKey()
         {
             secretKey.Clear();
             Random random = new Random();
-            string[] colors = ["rood", "geel", "oranje", "wit", "groen", "blauw"];
+            string[] colors = { "rood", "geel", "oranje", "wit", "groen", "blauw" };
 
-            for (int i = 0; i < colors.Length; i++)
+            while (secretKey.Count < 4) // Zorg dat je 4 unieke kleuren genereert.
             {
-                secretKey.Add(colors[random.Next(colors.Length)]);
+                string color = colors[random.Next(colors.Length)];
+                if (!secretKey.Contains(color))
+                {
+                    secretKey.Add(color);
+                }
             }
-            
-            
+
             ResetBoard();
         }
-        
+
         private void ResetBoard()
         {
-            MessageBox.Show("u score is ");
             GameBoard.Children.Clear();
             currentGuess.Clear();
             currentRow = 0;
-            
+
             for (int i = 0; i < 40; i++)
             {
                 Button cell = new Button
@@ -71,7 +61,46 @@ namespace MasterMind
                 cell.Click += BoardCell_Click;
                 GameBoard.Children.Add(cell);
             }
+        }
+        private void StartGame()
+        {
+            MessageBox.Show("Welkom bij Mastermind!");
 
+            while (true)
+            {
+                // Vraag de naam van de speler
+                string playerName = Microsoft.VisualBasic.Interaction.InputBox(
+                    "Voer de naam van de speler in:",
+                    "Speler toevoegen",
+                    ""); // Standaardwaarde is leeg
+
+                // Controleer of een naam is ingevoerd
+                if (!string.IsNullOrWhiteSpace(playerName))
+                {
+                    playerNames.Add(playerName); // Voeg de naam toe aan de lijst
+                }
+                else
+                {
+                    MessageBox.Show("Voer een geldige naam in.");
+                    continue; // Herhaal de vraag als de naam niet geldig is
+                }
+
+                // Vraag of nog een speler moet worden toegevoegd
+                MessageBoxResult result = MessageBox.Show(
+                    "Wil je nog een speler toevoegen?",
+                    "Nog een speler toevoegen?",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.No)
+                {
+                    break; // Stop met het vragen van spelersnamen
+                }
+            }
+
+            // Geef een overzicht van alle ingevoerde spelers
+            string playersOverview = string.Join(", ", playerNames);
+            MessageBox.Show($"De volgende spelers doen mee: {playersOverview}");
         }
 
         private void BoardCell_Click(object sender, RoutedEventArgs e)
@@ -103,61 +132,29 @@ namespace MasterMind
         {
             if (currentGuess.Count == 4)
             {
-                int totalPenalty = 0; // Totaal aantal strafpunten
-                List<int> penalizedPositions = []; // Lijst voor het bijhouden van de strafpuntenposities
+                List<string> guessedColors = currentGuess.Select(b => b.Tag?.ToString() ?? "").ToList();
 
-                // Loop over alle kleuren in de gok
-                for (int i = 0; i < 4; i++)
-                {
-                    string guessedColor = currentGuess[i].Tag?.ToString() ?? string.Empty;
+                // Bereken feedback
+                int correctPositions = guessedColors.Where((color, index) => color == secretKey[index]).Count();
+                int correctColors = guessedColors.Intersect(secretKey).Count() - correctPositions;
 
+                // Genereer feedbackpinnen
+                List<Brush> feedback = new();
+                feedback.AddRange(Enumerable.Repeat(Brushes.Red, correctPositions));
+                feedback.AddRange(Enumerable.Repeat(Brushes.White, correctColors));
 
-                    if (guessedColor == null)
-                        continue; // Als de kleur null is, ga door naar de volgende iteratie
-
-                    // Als de kleur overeenkomt met de geheime code op de zelfde positie
-                    if (guessedColor == secretKey[i])
-                    {
-                        totalPenalty += 0; // Correcte kleur en positie
-                    }
-                    else if (secretKey.Contains(guessedColor) && !penalizedPositions.Contains(secretKey.IndexOf(guessedColor)))
-                    {
-                        totalPenalty += 1; // Kleur komt voor, maar op een andere positie
-                        penalizedPositions.Add(secretKey.IndexOf(guessedColor)); // Zorg ervoor dat dezelfde kleur niet meerdere keren bestraft wordt
-                    }
-                    else
-                    {
-                        totalPenalty += 1; // Kleur komt niet voor in de geheime code
-                    }
-                }
-
-                // Update de score in het label (je moet een `ScoreLabel` in de XAML hebben)
-                ScoreLabel.Content = $"Score: {totalPenalty} Strafpunten";
-
-                // Genereer feedback (bijvoorbeeld witte of rode stippen)
-                List<Brush> feedback = [];
-                for (int i = 0; i < totalPenalty; i++)
-                {
-                    feedback.Add(Brushes.Red); // Voeg een rode stip toe voor een fout geraden kleur
-                }
-
-                // Voeg de poging en de feedback toe aan de lijst van pogingen
+                // Update pogingen
                 attempts.Add(new Attempt
                 {
-                    Guess = currentGuess.ConvertAll(b => b.Background), // Haal de achtergrondkleur van elke knop in de poging
-                    Feedback = feedback // Voeg de feedback toe
+                    Guess = currentGuess.Select(b => b.Background).ToList(),
+                    Feedback = feedback
                 });
 
-                // Update de weergave van de pogingen in de ListBox
-                AttemptsList.ItemsSource = null;
-                AttemptsList.ItemsSource = attempts;
-
-                // Reset de huidige gok voor de volgende poging
                 currentGuess.Clear();
                 currentRow++;
 
-                // Controleer of het spel afgelopen is (bijvoorbeeld, als de penalty 0 is, betekent dat de code is gekraakt)
-                CheckGameOver(totalPenalty == 0); // Het spel eindigt als er geen strafpunten zijn (code gekraakt)
+                // Controleer of de speler gewonnen heeft of het spel afgelopen is.
+                CheckGameOver(correctPositions == 4);
             }
             else
             {
@@ -165,28 +162,6 @@ namespace MasterMind
             }
         }
 
-
-
-
-
-        private void NewKey_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("geef jou naam in  [ ]");
-            GenerateNewKey();
-        }
-        private void StopGame_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBoxResult result = MessageBox.Show(
-                $"Poging {currentRow + 1}/10\n\nWilt u het spel vroegtijdig beëindigen?",
-                "Spel Beëindigen",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                Application.Current.Shutdown();
-            }
-        }
         private void CheckGameOver(bool codeCracked)
         {
             if (codeCracked)
@@ -225,43 +200,21 @@ namespace MasterMind
                 }
             }
         }
-       
 
-           
         private void ResetGame()
         {
             GenerateNewKey();
-            attempts.Clear(); 
+            attempts.Clear();
             currentRow = 0;
-            ScoreLabel.Content = "Score: 0 Strafpunten"; // Score resetten.
-           
         }
-
     }
-}
-public record Attempt(List<Brush> Guess, List<Brush> Feedback)
-{
-    public Attempt() : this([], [])
+
+    public record Attempt
     {
-        // Initialiseer Guess en Feedback met lege lijsten
-
-
+        public List<Brush> Guess { get; init; } = new();
+        public List<Brush> Feedback { get; init; } = new();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
