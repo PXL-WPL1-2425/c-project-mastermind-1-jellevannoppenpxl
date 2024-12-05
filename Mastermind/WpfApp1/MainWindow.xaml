@@ -72,6 +72,13 @@
            HorizontalAlignment="Center" 
            Margin="10" 
            Text="Actieve speler: " />
+        
+        <Button x:Name="HintButton" 
+        Content="Koop een hint" 
+        FontSize="14" 
+        Margin="10" 
+        Click="HintButton_Click" />
+
 
     </Grid>
     

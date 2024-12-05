@@ -218,23 +218,73 @@ namespace MasterMind
             ActivePlayerLabel.Text = $"Actieve speler: {currentPlayer}";
         }
 
-            private void ResetGame()
-            {
-                GenerateNewKey();
-                attempts.Clear();
-                currentRow = 0;
+        private void ResetGame()
+        {
+            GenerateNewKey();
+            attempts.Clear();
+            currentRow = 0;
             UpdateActivePlayerDisplay();
 
         }
     }
 
-        public record Attempt
+    public record Attempt
+    {
+        public List<Brush> Guess { get; init; } = new();
+        public List<Brush> Feedback { get; init; } = new();
+    }
+    private void BuyHint()
+    {
+        // Vraag de speler welke hint ze willen
+        MessageBoxResult result = MessageBox.Show(
+            "Welke hint wil je kopen?\n\n" +
+            "1. Juiste kleur (15 strafpunten)\n" +
+            "2. Juiste kleur op de juiste plaats (25 strafpunten)\n\n" +
+            "Klik op Ja voor een juiste kleur of Nee voor een juiste kleur op de juiste plaats.",
+            "Koop een hint",
+            MessageBoxButton.YesNoCancel,
+            MessageBoxImage.Question);
+
+        // Bepaal de keuze
+        if (result == MessageBoxResult.Yes)
         {
-            public List<Brush> Guess { get; init; } = new();
-            public List<Brush> Feedback { get; init; } = new();
+            // Juiste kleur (15 strafpunten)
+            DeductPoints(15);
+            string correctColor = GiveCorrectColorHint();
+            MessageBox.Show($"Hint: Een juiste kleur is {correctColor}.", "Hint - Juiste kleur", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        else if (result == MessageBoxResult.No)
+        {
+            // Juiste kleur op de juiste plaats (25 strafpunten)
+            DeductPoints(25);
+            (string color, int position) = GiveCorrectColorAndPositionHint();
+            MessageBox.Show($"Hint: Een juiste kleur op de juiste plaats is {color} op positie {position + 1}.", "Hint - Juiste kleur en plaats", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    
+        private void DeductPoints(int points)
+        {
+            // Update de score (zorg ervoor dat je een variabele voor de huidige score hebt)
+            currentScore += points;
+            ScoreLabel.Content = $"Score: {currentScore} Strafpunten";
+        }
+        private string GiveCorrectColorHint()
+        {
+            Random random = new Random();
+            return secretKey[random.Next(secretKey.Count)];
+        }
+        private (string color, int position) GiveCorrectColorAndPositionHint()
+        {
+            Random random = new Random();
+            int position = random.Next(secretKey.Count);
+            return (secretKey[position], position);
+        }
+        private void HintButton_Click(object sender, RoutedEventArgs e)
+        {
+            BuyHint();
         }
 
     }
+}
 
 
 
