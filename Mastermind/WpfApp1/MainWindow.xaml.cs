@@ -15,6 +15,7 @@ namespace MasterMind
         private int currentRow = 0;
         private ObservableCollection<Attempt> attempts = new();
         private List<string> playerNames = new(); // Lijst om spelersnamen op te slaan
+        private int currentPlayerIndex = 0; // Index van de huidige speler
 
         public MainWindow()
         {
@@ -164,17 +165,21 @@ namespace MasterMind
 
         private void CheckGameOver(bool codeCracked)
         {
+            string currentPlayer = playerNames[currentPlayerIndex];
+            string nextPlayer = playerNames[(currentPlayerIndex + 1) % playerNames.Count]; // Volgende speler (ronde-robin)
+
             if (codeCracked)
             {
                 MessageBoxResult result = MessageBox.Show(
-                    $"Code is gekraakt in {currentRow + 1} pogingen. Wil je nog eens?",
-                    "WINNER",
+                    $"Gefeliciteerd {currentPlayer}! Je hebt de code gekraakt in {currentRow + 1} pogingen.\n" +
+                    $"Nu is het de beurt aan {nextPlayer}. Wil je opnieuw spelen?",
+                    $"{currentPlayer} - WINNER",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Information);
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    ResetGame();
+                    SwitchToNextPlayer();
                 }
                 else
                 {
@@ -185,14 +190,15 @@ namespace MasterMind
             {
                 string code = string.Join(", ", secretKey);
                 MessageBoxResult result = MessageBox.Show(
-                    $"Je hebt gefaald! De correcte code was: {code}. Nog eens proberen?",
-                    "FAILED",
+                    $"Sorry {currentPlayer}, je hebt gefaald! De correcte code was: {code}.\n" +
+                    $"Nu is het de beurt aan {nextPlayer}. Wil je opnieuw spelen?",
+                    $"{currentPlayer} - FAILED",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    ResetGame();
+                    SwitchToNextPlayer();
                 }
                 else
                 {
@@ -200,6 +206,12 @@ namespace MasterMind
                 }
             }
         }
+        private void SwitchToNextPlayer()
+        {
+            currentPlayerIndex = (currentPlayerIndex + 1) % playerNames.Count; // Volgende speler
+            ResetGame(); // Reset het spelbord voor de volgende speler
+        }
+
 
         private void ResetGame()
         {
