@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -23,6 +20,8 @@ namespace MasterMind
             AttemptsList.ItemsSource = attempts; // Verbind de lijst aan de UI.
             GenerateNewKey();
             StartGame();
+            UpdateActivePlayerDisplay();
+
         }
 
         private void GenerateNewKey()
@@ -210,23 +209,34 @@ namespace MasterMind
         {
             currentPlayerIndex = (currentPlayerIndex + 1) % playerNames.Count; // Volgende speler
             ResetGame(); // Reset het spelbord voor de volgende speler
+            UpdateActivePlayerDisplay();
+
         }
-
-
-        private void ResetGame()
+        private void UpdateActivePlayerDisplay()
         {
-            GenerateNewKey();
-            attempts.Clear();
-            currentRow = 0;
+            string currentPlayer = playerNames[currentPlayerIndex];
+            ActivePlayerLabel.Text = $"Actieve speler: {currentPlayer}";
+        }
+
+            private void ResetGame()
+            {
+                GenerateNewKey();
+                attempts.Clear();
+                currentRow = 0;
+            UpdateActivePlayerDisplay();
+
         }
     }
 
-    public record Attempt
-    {
-        public List<Brush> Guess { get; init; } = new();
-        public List<Brush> Feedback { get; init; } = new();
+        public record Attempt
+        {
+            public List<Brush> Guess { get; init; } = new();
+            public List<Brush> Feedback { get; init; } = new();
+        }
+
     }
-}
+
+
 
 
 
