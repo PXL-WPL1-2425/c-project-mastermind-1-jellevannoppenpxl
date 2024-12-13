@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -134,10 +131,6 @@ namespace MasterMind
                 }
             }
         }
-
-    }
-}
-
         private void CheckGuess_Click(object sender, RoutedEventArgs e)
         {
             if (currentGuess.Count == 4)
@@ -203,13 +196,21 @@ namespace MasterMind
             ActivePlayerLabel.Content = playerNames[currentPlayerIndex];
             ScoreLabel.Content = playerScores[playerNames[currentPlayerIndex]];
         }
+        private void ColorChoice_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button colorButton && currentGuess.Count < 4)
+            {
+                string chosenColor = colorButton.Tag.ToString();
+                // Verwerk hier de gekozen kleur
+            }
+        }
+
 
         private void ResetGame_Click(object sender, RoutedEventArgs e)
         {
             StartNewGame();
         }
     }
-
     public record Attempt
     {
         public List<Brush> Guess { get; init; } = new();
@@ -222,12 +223,11 @@ namespace MasterMind
             Feedback = new List<Brush>();
         }
     }
-}private void ColorChoice_Click(object sender, RoutedEventArgs e)
-{
-    if (sender is Button colorButton && currentGuess.Count < 4)
-    {
-        string chosenColor = colorButton.Tag.ToString();
-        // Verwerk hier de gekozen kleur
-    }
 }
+
+
+
+
+
+
 
