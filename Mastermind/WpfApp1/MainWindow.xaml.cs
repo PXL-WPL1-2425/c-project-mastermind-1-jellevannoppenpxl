@@ -136,11 +136,11 @@ namespace MasterMind
             UpdateActivePlayerDisplay();
         }
 
-        private void ColorChoice_Click(object sender, RoutedEventArgs e)
+        private void ColorChoice_Click(object sender, RoutedEventArgs e, Button colorButton)
         {
-            if (sender is Button colorButton && currentGuess.Count < 4)
+            if (sender is Button colerchoice && currentGuess.Count < 4)
             {
-                string chosenColor = colorButton.Tag.ToString();
+                string chosenColor = colerchoice.Tag.ToString();
                 // Verwerk hier de gekozen kleur
             }
         }
@@ -228,6 +228,7 @@ namespace MasterMind
         {
             Guess = new List<Brush>();
             Feedback = new List<Brush>();
+            MessageBox.Show("");
         }
     }
 }

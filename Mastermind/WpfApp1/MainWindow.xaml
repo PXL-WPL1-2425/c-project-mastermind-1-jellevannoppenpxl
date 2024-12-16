@@ -12,7 +12,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Menu x:Name="hoofdmenu" Height="1" Width="1">
-            <MenuItem Header ="bestand" Click="MenuItem_Click" />
+            <MenuItem Header ="bestand" />
             <MenuItem x:Name ="nieuwSpel" Header="nieuw spel" />
             <MenuItem x:Name ="afsluiten" Header="afsluiten" />
             <MenuItem />
