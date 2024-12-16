@@ -2,49 +2,53 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MasterMind" Height="600" Width="400">
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="3*" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Menu x:Name="hoofdmenu" Height="1" Width="1">
+            <MenuItem Header ="bestand" Click="MenuItem_Click" />
+            <MenuItem x:Name ="nieuwSpel" Header="nieuw spel" />
+            <MenuItem x:Name ="afsluiten" Header="afsluiten" />
+            <MenuItem />
+            <MenuItem Header ="instellingen" />
+            <MenuItem x:Name="aantalPogingen" Header ="aantal pogingen" />
+            <MenuItem />
+            <MenuItem Header="spel" />
+            <MenuItem x:Name="highScore" Header="highscore" />
+            <MenuItem x:Name="hint" Header="hint" />
+            <MenuItem x:Name="overzichtHints" Header="overzicht hints" />
+        </Menu>
 
-		<!-- Header for current player and score -->
-		<StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="10" VerticalAlignment="Center">
-			<Label Content="Actieve speler:" FontWeight="Bold" />
-			<Label Name="ActivePlayerLabel" Content="Naam" Margin="5,0" Foreground="Blue" />
-			<Label Content="Score:" FontWeight="Bold" />
-			<Label Name="ScoreLabel" Content="0" Margin="5,0" Foreground="Green" />
-		</StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="10" VerticalAlignment="Center">
+            <Label Content="Actieve speler:" FontWeight="Bold" />
+            <Label Name="ActivePlayerLabel" Content="Naam" Margin="5,0" Foreground="Blue" />
+            <Label Content="Score:" FontWeight="Bold" />
+            <Label Name="ScoreLabel" Content="0" Margin="5,0" Foreground="Green" />
+        </StackPanel>
 
-		<!-- Game Board -->
-		<UniformGrid Name="GameBoard" Grid.Row="1" Grid.Column="0" Rows="10" Columns="4" Margin="10" Background="LightGray" />
+        <!-- Game Board -->
+        <UniformGrid Name="GameBoard" Grid.Row="1" Grid.Column="0" Rows="10" Columns="4" Margin="10" Background="LightGray" />
 
-		<!-- Control Panel -->
-		<StackPanel Grid.Row="1" Grid.Column="1" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-			<Button Name="CheckGuessButton" Content="Controleer gok" Click="CheckGuess_Click" Margin="5" ToolTip="Controleer je huidige gok." />
-			<Button Name="HintButton" Content="Koop hint" Click="HintButton_Click" Margin="5" ToolTip="Koop een hint (kost strafpunten)." />
-			<Button Name="ResetButton" Content="Herstart spel" Click="ResetGame_Click" Margin="5" ToolTip="Start een nieuw spel." />
-			<ListBox Name="AttemptsList" Margin="5" ToolTip="Bekijk de geschiedenis van je pogingen." />
-		</StackPanel>
-		<StackPanel Orientation="Horizontal" Margin="10">
-			<Button Content="Rood" Background="Red" Click="ColorChoice_Click" Tag="rood" />
-			<Button Content="Geel" Background="Yellow" Click="ColorChoice_Click" Tag="geel" />
-			<Button Content="Oranje" Background="Orange" Click="ColorChoice_Click" Tag="oranje" />
-			<Button Content="Wit" Background="White" Click="ColorChoice_Click" Tag="wit" />
-			<Button Content="Groen" Background="Green" Click="ColorChoice_Click" Tag="groen" />
-			<Button Content="Blauw" Background="Blue" Click="ColorChoice_Click" Tag="blauw" />
-		</StackPanel>
-
-
-
-
-
-
-
-
-	</Grid>
+        <!-- Control Panel -->
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+            <Button Name="CheckGuessButton" Content="Controleer gok" Click="CheckGuess_Click" Margin="5" ToolTip="Controleer je huidige gok." />
+            <Button Name="HintButton" Content="Koop hint" Click="HintButton_Click" Margin="5" ToolTip="Koop een hint (kost strafpunten)." />
+            <Button Name="ResetButton" Content="Herstart spel" Click="ResetGame_Click" Margin="5" ToolTip="Start een nieuw spel." />
+            <ListBox Name="AttemptsList" Margin="5" ToolTip="Bekijk de geschiedenis van je pogingen." />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <Button Content="Rood" Background="Red" Click="ColorChoice_Click" Tag="rood" />
+            <Button Content="Geel" Background="Yellow" Click="ColorChoice_Click" Tag="geel" />
+            <Button Content="Oranje" Background="Orange" Click="ColorChoice_Click" Tag="oranje" />
+            <Button Content="Wit" Background="White" Click="ColorChoice_Click" Tag="wit" />
+            <Button Content="Groen" Background="Green" Click="ColorChoice_Click" Tag="groen" />
+            <Button Content="Blauw" Background="Blue" Click="ColorChoice_Click" Tag="blauw" />
+        </StackPanel>
+    </Grid>
 </Window>
